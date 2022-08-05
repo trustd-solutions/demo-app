@@ -1,0 +1,64 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  strategy:
+    type: {{ .Values.deployment.strategy.type }}
+    rollingUpdate:
+      maxSurge: {{.Values.deployment.strategy.maxSurge}}
+      maxUnavailable: {{.Values.deployment.strategy.maxUnavailable}}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ include "app.fullname" . }}
+            - configMapRef:
+                name: {{ include "app.fullname" . }}
+          ports:
+          - containerPort: {{ .Values.service.app.containerPort }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.shouldCleanup }}
+      initContainers:
+      - name: {{ .Chart.Name }}-cleanup
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        envFrom:
+          - secretRef:
+              name: {{ include "app.fullname" . }}
+          - configMapRef:
+              name: {{ include "app.fullname" . }}
+        command:
+        - /bin/sh
+        - -c
+        - |
+          php artisan db:refresh -P
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
