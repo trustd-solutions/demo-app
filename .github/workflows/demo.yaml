@@ -1,0 +1,52 @@
+# push to dev branch: deploy to the dev cluster
+# push to master branch: deploy to the QA cluster
+# publish to release: deploy to the staging cluster
+---
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+env:
+  APPS: 'demo-app'
+  ECR_REGISTRY: 120364521891.dkr.ecr.us-east-1.amazonaws.com
+  ECR_AWS_REGION: 'us-east-1'
+name: "main"
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checking out codebase
+      uses: actions/checkout@v2
+
+    - name: Authenticating to AWS
+      with:
+        aws-access-key-id: ${{ secrets.awsAccessKeyId }}
+        aws-secret-access-key: ${{ secrets.awsSecretAccessKey }}
+        aws-region: ${{ env.ECR_AWS_REGION }}
+      uses: aws-actions/configure-aws-credentials@v1
+
+    - name: AWS ECR Login
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and Push
+      run: |
+        apps=${{ env.APPS }}
+        for app in "${apps[@]}"; do
+          docker build -t ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }} .;
+          docker push ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }}
+        done
+    
+    - name: "Helm upgrade"
+      run: |
+        apps=${{ env.APPS }}
+        for app in "${apps[@]}"; do
+          helm upgrade --install ${app} ./helm-chart \
+           --namespace=default \
+           --atomic \
+           --wait \
+           --set "container.registry=${{ env.ECR_REGISTRY }}" \
+           --set "container.tag=${{ github.sha }}"
+        done

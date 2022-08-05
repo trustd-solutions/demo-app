@@ -1,0 +1,56 @@
+---
+image:
+  repository: "xxx.dkr.ecr.us-east-1.amazonaws.com/demo"
+  tag: "latest"
+  pullPolicy: Always
+replicaCount: 1
+nameOverride: "demo-app"
+fullnameOverride: "demo-app"
+shouldCleanup: false
+enviromentVariables: {}
+secrets: {}
+oauthPublicKey: ""
+oauthPrivateKey: ""
+service:
+  app:
+    type: NodePort
+    servicePort: 80
+    servicePortName: http
+    containerPort: 8080
+    protocol: TCP
+deployment:
+  strategy:
+    type: RollingUpdate
+    maxSurge: 1
+    maxUnavailable: 50%
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+nodeSelector:
+  node_type: "general"
+ingress:
+  host: ""
+readinessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8080
+  failureThreshold: 2
+  initialDelaySeconds: 30
+  periodSeconds: 10
+livenessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8080
+  failureThreshold: 2
+  initialDelaySeconds: 60
+  periodSeconds: 10
