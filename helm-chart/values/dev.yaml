@@ -1,17 +1,17 @@
 ---
 aws_region: us-east-1
 environmentVariables:
-  APP_NAME: demo
-  APP_ENV: local
+  APP_NAME: petclinic
   APP_DEBUG: true
   APP_URL: "https://demo.trustd.solutions"
-  APP_TIMEZONE: America/Vancouver
+  APP_ENV: local
+  MYSQL_URL: "jdbc:mysql://mysql.default/petclinic"
 
 clusterIssuer: letsencrypt-dev
 
 serviceAccount:
   annotations:
-    "eks.amazonaws.com/role-arn": "arn:aws:iam::xxx:role/app-demo"
+    "eks.amazonaws.com/role-arn": "arn:aws:iam::120364521891:role/app-demo"
 
 ingress:
   enabled: true

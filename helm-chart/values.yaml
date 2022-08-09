@@ -1,6 +1,6 @@
 ---
 image:
-  repository: "xxx.dkr.ecr.us-east-1.amazonaws.com/demo"
+  repository: "120364521891.dkr.ecr.us-east-1.amazonaws.com/spring-petclinic"
   tag: "latest"
   pullPolicy: Always
 replicaCount: 1

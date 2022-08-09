@@ -8,7 +8,7 @@ on:
     branches:
       - main
 env:
-  APPS: 'demo-app'
+  APPS: 'spring-petclinic'
   ECR_REGISTRY: 120364521891.dkr.ecr.us-east-1.amazonaws.com
   ECR_AWS_REGION: 'us-east-1'
 name: "main"
@@ -35,7 +35,10 @@ jobs:
       run: |
         apps=${{ env.APPS }}
         for app in "${apps[@]}"; do
-          docker build -t ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }} .;
+          ./mvnw -DskipTests spring-boot:build-image
+          docker tag ${app} ${{ env.ECR_REGISTRY }}/${app}:latest;
+          docker tag ${app} ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }};
+          docker push ${{ env.ECR_REGISTRY }}/${app}:latest
           docker push ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }}
         done
     
