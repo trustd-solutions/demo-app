@@ -6,6 +6,8 @@ environmentVariables:
   APP_URL: "https://demo.trustd.solutions"
   APP_ENV: local
   MYSQL_URL: "jdbc:mysql://mysql.default/petclinic"
+  MYSQL_USER: "petclinic"
+  MYSQL_PASS: "petclinic"
 
 clusterIssuer: letsencrypt-dev
 
