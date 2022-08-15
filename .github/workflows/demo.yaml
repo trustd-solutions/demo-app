@@ -51,7 +51,7 @@ jobs:
       run: |
         apps=${{ env.APPS }}
         for app in "${apps[@]}"; do
-          helm upgrade --install ${app} ./${{ env.HELM_DIR }} \
+          helm upgrade ${app} ${{ env.HELM_DIR }}/ \
            --namespace=default \
            --atomic \
            --wait \
