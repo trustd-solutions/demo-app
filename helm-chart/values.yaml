@@ -9,8 +9,6 @@ fullnameOverride: "spring-petclinic"
 shouldCleanup: false
 enviromentVariables: {}
 secrets: {}
-oauthPublicKey: ""
-oauthPrivateKey: ""
 service:
   app:
     type: NodePort
