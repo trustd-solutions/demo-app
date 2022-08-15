@@ -12,6 +12,7 @@ env:
   ECR_REGISTRY: 120364521891.dkr.ecr.us-east-1.amazonaws.com
   ECR_AWS_REGION: 'us-east-1'
   EKS_CLUSTER: trustd-demo
+  HELM_DIR: helm-chart
 name: "main"
 jobs:
   build:
@@ -50,10 +51,10 @@ jobs:
       run: |
         apps=${{ env.APPS }}
         for app in "${apps[@]}"; do
-          helm upgrade --install ${app} ./helm-chart \
+          helm upgrade --install ${app} ./${{ env.HELM_DIR }} \
            --namespace=default \
            --atomic \
            --wait \
-           --set "container.registry=${{ env.ECR_REGISTRY }}" \
-           --set "container.tag=${{ github.sha }}"
+           --set image.tag=${{ github.sha }} \
+           --values=${{ env.HELM_DIR }}/values/demo.yaml
         done
