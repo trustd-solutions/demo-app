@@ -4,8 +4,8 @@ image:
   tag: "latest"
   pullPolicy: Always
 replicaCount: 1
-nameOverride: "demo-app"
-fullnameOverride: "demo-app"
+nameOverride: "spring-petclinic"
+fullnameOverride: "spring-petclinic"
 shouldCleanup: false
 enviromentVariables: {}
 secrets: {}
