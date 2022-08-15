@@ -35,11 +35,11 @@ jobs:
       run: |
         apps=${{ env.APPS }}
         for app in "${apps[@]}"; do
-          ./mvnw -DskipTests spring-boot:build-image
-          docker tag ${app} ${{ env.ECR_REGISTRY }}/${app}:latest;
+          ./mvnw -DskipTests spring-boot:build-image -Dspring-boot.build-image.imageName=${app}:latest
+          docker tag ${app}:latest ${{ env.ECR_REGISTRY }}/${app}:latest;
           docker tag ${app} ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }};
-          docker push ${{ env.ECR_REGISTRY }}/${app}:latest
-          docker push ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }}
+          docker push ${{ env.ECR_REGISTRY }}/${app}:latest;
+          docker push ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }};
         done
     
     - name: "Helm upgrade"
