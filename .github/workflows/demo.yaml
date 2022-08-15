@@ -24,8 +24,8 @@ jobs:
 
     - name: Authenticating to AWS
       with:
-        aws-access-key-id: ${{ secrets.awsAccessKeyId }}
-        aws-secret-access-key: ${{ secrets.awsSecretAccessKey }}
+        aws-access-key-id: ${{ secrets.AWSACCESSKEYID }}
+        aws-secret-access-key: ${{ secrets.AWSSECRETACCESSKEY }}
         aws-region: ${{ env.AWS_REGION }}
       uses: aws-actions/configure-aws-credentials@v1
     
@@ -53,6 +53,8 @@ jobs:
         for app in "${apps[@]}"; do
           helm upgrade ${app} ${{ env.HELM_DIR }}/ \
            --namespace=default \
+           --cleanup-on-fail \
+           --install \
            --atomic \
            --wait \
            --set image.tag=${{ github.sha }} \
