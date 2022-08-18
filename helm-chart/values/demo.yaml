@@ -13,24 +13,8 @@ clusterIssuer: letsencrypt-dev
 
 serviceAccount:
   annotations:
-    "eks.amazonaws.com/role-arn": "arn:aws:iam::120364521891:role/app-demo"
+    "eks.amazonaws.com/role-arn": "arn:aws:iam::120364521891:role/trustd-demo"
 
 ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: "alb"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    alb.ingress.kubernetes.io/tags: EKS=True
-    alb.ingress.kubernetes.io/healthcheck-path: "/api/echo"
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/group.name: "app-demo"
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
-  hosts:
-    - host: demo.trustd.solutions
-      paths:
-        - /*
-  tls:
-    - hosts:
-        - demo.trustd.solutions
-      secretName: demo-dev-cert
+  url: demo.trustd.solutions
+  tls_secret: app-demo-cert

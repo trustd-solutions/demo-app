@@ -36,23 +36,9 @@ spec:
             - configMapRef:
                 name: {{ include "app.fullname" . }}
           ports:
-          - containerPort: {{ .Values.service.app.containerPort }}
+            - containerPort: {{ .Values.service.app.containerPort }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if .Values.shouldCleanup }}
-      initContainers:
-      - name: {{ .Chart.Name }}-cleanup
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        envFrom:
-          - configMapRef:
-              name: {{ include "app.fullname" . }}
-        command:
-        - /bin/sh
-        - -c
-        - |
-          php artisan db:refresh -P
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

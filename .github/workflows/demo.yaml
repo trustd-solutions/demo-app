@@ -40,7 +40,7 @@ jobs:
       run: |
         apps=${{ env.APPS }}
         for app in "${apps[@]}"; do
-          ./mvnw -DskipTests spring-boot:build-image -Dspring-boot.build-image.imageName=${app}:latest
+          ./mvnw -DskipTests spring-boot:build-image -Dspring.profiles.active=mysql -Dspring-boot.build-image.imageName=${app}:latest
           docker tag ${app}:latest ${{ env.ECR_REGISTRY }}/${app}:latest;
           docker tag ${app} ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }};
           docker push ${{ env.ECR_REGISTRY }}/${app}:latest;
@@ -58,5 +58,5 @@ jobs:
            --atomic \
            --wait \
            --set image.tag=${{ github.sha }} \
-           --values=${{ env.HELM_DIR }}/values/demo.yaml
+           --values=${{ env.HELM_DIR }}/values/demo.yaml;
         done
