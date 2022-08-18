@@ -9,7 +9,7 @@ environmentVariables:
   MYSQL_USER: "petclinic"
   MYSQL_PASS: "petclinic"
 
-clusterIssuer: letsencrypt-dev
+clusterIssuer: letsencrypt
 
 serviceAccount:
   annotations:
