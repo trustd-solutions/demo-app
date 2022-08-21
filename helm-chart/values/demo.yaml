@@ -8,12 +8,9 @@ environmentVariables:
   MYSQL_URL: "jdbc:mysql://mysql.default/petclinic"
   MYSQL_USER: "petclinic"
   MYSQL_PASS: "petclinic"
+#  SPRING_PROFILES_ACTIVE: mysql
 
 clusterIssuer: letsencrypt
-
-serviceAccount:
-  annotations:
-    "eks.amazonaws.com/role-arn": "arn:aws:iam::120364521891:role/trustd-demo"
 
 ingress:
   url: demo.trustd.solutions
