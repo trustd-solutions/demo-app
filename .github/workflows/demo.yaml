@@ -47,16 +47,16 @@ jobs:
           docker push ${{ env.ECR_REGISTRY }}/${app}:${{ github.sha }};
         done
     
-    - name: "Helm upgrade"
-      run: |
-        apps=${{ env.APPS }}
-        for app in "${apps[@]}"; do
-          helm upgrade ${app} ${{ env.HELM_DIR }}/ \
-           --namespace=default \
-           --cleanup-on-fail \
-           --install \
-           --atomic \
-           --wait \
-           --set image.tag=${{ github.sha }} \
-           --values=${{ env.HELM_DIR }}/values/demo.yaml;
-        done
+#   - name: "Helm upgrade"
+#     run: |
+#       apps=${{ env.APPS }}
+#       for app in "${apps[@]}"; do
+#         helm upgrade ${app} ${{ env.HELM_DIR }}/ \
+#          --namespace=default \
+#          --cleanup-on-fail \
+#          --install \
+#          --atomic \
+#          --wait \
+#          --set image.tag=${{ github.sha }} \
+#          --values=${{ env.HELM_DIR }}/values/demo.yaml;
+#       done
